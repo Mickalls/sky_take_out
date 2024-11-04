@@ -52,7 +52,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         password = DigestUtils.md5DigestAsHex(password.getBytes());
 
         //密码比对
-        // TODO 后期需要进行md5加密，然后再进行比对
         if (!password.equals(employee.getPassword())) {
             //密码错误
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
@@ -96,6 +95,25 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     /**
+     * 编辑员工信息
+     *
+     * @param employeeDTO
+     */
+    public void update(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+
+        // 对象属性拷贝
+        BeanUtils.copyProperties(employeeDTO, employee);
+
+        // 设置修改时间和修改人
+        employee.setUpdateUser(BaseContext.getCurrentId());
+        employee.setUpdateTime(LocalDateTime.now());
+
+        // 调用Mapper层的修改函数
+        employeeMapper.update(employee);
+    }
+
+    /**
      * 员工查询
      *
      * @param employeePageQueryDTO
@@ -112,6 +130,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new PageResult(total, records);
     }
 
+    /**
+     * 启用、禁用员工帐号
+     *
+     * @param status
+     * @param id
+     */
     public void startOrStop(Integer status, Long id) {
         // update employee set status = ? where id = ?
 
@@ -121,5 +145,18 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .build();
 
         employeeMapper.update(employee);
+    }
+
+    /**
+     * 根据id查询员工信息
+     *
+     * @param id
+     * @return
+     */
+    public Employee getEmployeeById(Long id) {
+        // select * from employee where id = ?
+        Employee temp = employeeMapper.getById(id);
+        temp.setPassword("****");
+        return temp;
     }
 }

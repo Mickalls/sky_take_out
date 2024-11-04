@@ -34,12 +34,6 @@ public class EmployeeController {
     @Autowired
     private JwtProperties jwtProperties;
 
-    /**
-     * 登录
-     *
-     * @param employeeLoginDTO
-     * @return
-     */
     @PostMapping("/login")
     @ApiOperation(value = "员工登陆")
     public Result<EmployeeLoginVO> login(@RequestBody EmployeeLoginDTO employeeLoginDTO) {
@@ -65,23 +59,12 @@ public class EmployeeController {
         return Result.success(employeeLoginVO);
     }
 
-    /**
-     * 退出
-     *
-     * @return
-     */
     @PostMapping("/logout")
     @ApiOperation(value = "员工退出")
     public Result<String> logout() {
         return Result.success();
     }
 
-    /**
-     * 新增员工
-     *
-     * @param employeeDTO
-     * @return
-     */
     @PostMapping("")
     @ApiOperation(value = "新增员工")
     public Result save(@RequestBody EmployeeDTO employeeDTO) {
@@ -90,12 +73,14 @@ public class EmployeeController {
         return Result.success();
     }
 
-    /**
-     * 员工分页查询
-     *
-     * @param employeePageQueryDTO
-     * @return
-     */
+    @PutMapping("")
+    @ApiOperation("编辑员工信息")
+    public Result updateEmployeeMsg(@RequestBody EmployeeDTO employeeDTO) {
+        log.info("编辑员工: {}", employeeDTO);
+        employeeService.update(employeeDTO);
+        return Result.success();
+    }
+
     @GetMapping("/page")
     @ApiOperation("员工分页查询")
     public Result<PageResult> page(EmployeePageQueryDTO employeePageQueryDTO) {
@@ -104,18 +89,18 @@ public class EmployeeController {
         return Result.success(pageResult);
     }
 
-    /**
-     * 启用、禁用员工帐号
-     *
-     * @param status
-     * @param id
-     * @return
-     */
     @PostMapping("/status/{status}")
     @ApiOperation("启用、禁用员工账号")
     public Result startOrStop(@PathVariable("status") Integer status, Long id) {
         log.info("启用禁用员工账号: {}, {}", status, id);
         employeeService.startOrStop(status, id);
         return Result.success();
+    }
+
+    @GetMapping("/{id}")
+    @ApiOperation("根据id查询员工信息")
+    public Result<Employee> getEmployeeById(@PathVariable("id") Long id) {
+        log.info("查询 id: {} 的员工信息", id);
+        return Result.success(employeeService.getEmployeeById(id));
     }
 }
