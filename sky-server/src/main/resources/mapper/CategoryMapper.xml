@@ -27,6 +27,7 @@
         where id = #{id}
     </update>
 
+    <!-- 这里为了优化查询效率,只查name,但实际返回的是其他字段为null的Category对象/Json数据,不然前端不正常显示数据(前端代码设计有问题) -->
     <select id="list" resultType="com.sky.entity.Category">
         select name from category where status = 1
         <if test="type != null">and type = #{type}</if>

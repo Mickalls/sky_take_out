@@ -73,12 +73,13 @@ public class CategoryController {
     /**
      * 根据类别查询所有对应类型的具体分类名称
      * 用法:菜品管理和套餐管理中的“菜品/套餐 分类”中选择具体的分类类型
+     * 优化:查询时只查name字段,但因为前端代码有问题,只能返回List<Category>,不然范围List<String>无法正常显示数据
      */
     @GetMapping("/list")
     @ApiOperation("根据类别查询对应类型的具体分类名称")
-    public Result<List<String>> list(@RequestParam Integer type) {
+    public Result<List<Category>> list(@RequestParam Integer type) {
         log.info("根据类型 {} 查询该类型的具体分类", type);
-        List<String> list = categoryService.list(type);
+        List<Category> list = categoryService.list(type);
         return Result.success(list);
     }
 }
