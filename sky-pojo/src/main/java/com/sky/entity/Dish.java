@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -21,10 +22,10 @@ public class Dish implements Serializable {
 
     private Long id;
 
-    //菜品名称
+    //菜品名称 (唯一)
     private String name;
 
-    //菜品分类id
+    //菜品分类id (必须属于某个分类)
     private Long categoryId;
 
     //菜品价格
