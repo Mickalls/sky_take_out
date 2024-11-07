@@ -92,4 +92,42 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
         return list;
     }
+
+    /**
+     * 清空购物车
+     */
+    public void clean() {
+        // 获取当前微信用户的id
+        Long currentId = BaseContext.getCurrentId();
+
+        // 调用mapper层方法
+        shoppingCartMapper.deleteByUserId(currentId);
+    }
+
+    /**
+     * 删除购物车中的一件商品
+     *
+     * @param shoppingCartDTO
+     */
+    public void deleteOne(ShoppingCartDTO shoppingCartDTO) {
+        // 获取当前微信用户的id
+        Long currentId = BaseContext.getCurrentId();
+
+        ShoppingCart shoppingCart = new ShoppingCart();
+        BeanUtils.copyProperties(shoppingCartDTO, shoppingCart);
+        shoppingCart.setUserId(currentId);
+
+        // 如果有这个记录且数量大于1，则update数量为1
+        List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
+        ShoppingCart foundShoppingCart = list.get(0);
+        if (foundShoppingCart.getNumber() == 1) {
+            // 如果购物车中数量只有一件，直接删除
+            shoppingCartMapper.deleteOne(shoppingCart);
+            return;
+        }
+        // 否则只删除购物车中的一件数量
+        // 先讲查找到的记录中的number字段减1
+        foundShoppingCart.setNumber(foundShoppingCart.getNumber() - 1);
+        shoppingCartMapper.updateNumberById(foundShoppingCart);
+    }
 }
